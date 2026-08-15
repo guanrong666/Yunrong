@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>允榮油漆工程行｜估價單</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar no-print">
+    <div class="brand-mark">允</div>
+    <div>
+      <strong>允榮油漆工程行</strong>
+      <span>估價單製作工具</span>
+    </div>
+    <div class="save-state" id="saveState"><i></i> 已自動儲存</div>
+  </header>
+
+  <main>
+    <section class="intro no-print">
+      <div>
+        <p class="eyebrow">Yunrong</p>
+        <h1>允榮油漆工程行</h1>
+        <p>輸入內容會自動保留在這台裝置，下次開啟可繼續編輯。</p>
+      </div>
+      <div class="intro-actions">
+        <button class="btn btn-light" id="clearBtn" type="button">清除全部</button>
+        <button class="btn btn-primary" id="exportBtn" type="button">預覽並輸出 PDF</button>
+      </div>
+    </section>
+
+    <article class="paper" id="quotation">
+      <div class="paper-accent"></div>
+      <header class="quote-header">
+        <div class="company">
+          <div class="logo">允</div>
+          <div>
+            <h2>允榮油漆工程行</h2>
+            <p>允榮用心・漆出安心</p>
+          </div>
+        </div>
+        <div class="quote-title">
+          <h2>估價單</h2>
+        </div>
+      </header>
+
+      <section class="meta-grid">
+        <label class="field client-name"><span>客戶／公司名稱</span><input id="clientName" placeholder="請輸入公司或客戶名稱"></label>
+        <label class="field"><span>日期</span><input id="quoteDate" type="date"></label>
+        <label class="field client-address"><span>地址</span><input id="clientAddress" placeholder="請輸入工程或公司地址"></label>
+      </section>
+
+      <section class="items-section">
+        <div class="section-heading">
+          <div><span>項目明細</span><small class="no-print">可選擇自動計算或直接輸入總價</small></div>
+          <button type="button" class="add-btn no-print" id="addItemBtn">＋ 新增項目</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th class="col-no">項次</th><th>品名／工程項目</th><th>數量</th><th>單位</th><th>單價</th><th>金額</th><th class="no-print col-action"></th></tr></thead>
+            <tbody id="itemsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <label class="notes"><span>備註與付款條件</span><textarea id="notes" rows="4" placeholder="例如：本估價單有效期限 30 天；施工前收取訂金 30%。"></textarea></label>
+        <div class="totals">
+          <div id="taxRow"><span>營業稅 5%</span><strong id="taxAmount">NT$ 0</strong></div>
+          <div class="grand-total"><span>總計</span><strong id="grandTotal">NT$ 0</strong></div>
+          <p id="taxLabel">未稅</p>
+        </div>
+      </section>
+
+      <footer class="quote-footer">
+        <p>感謝您的信任</p>
+        <div class="signature"><span>經手人　謝俊宏</span><i></i><small>允榮油漆工程行</small></div>
+      </footer>
+    </article>
+  </main>
+
+  <dialog id="taxDialog">
+    <form method="dialog">
+      <div class="dialog-icon">%</div>
+      <h2>這份估價單需要加稅嗎？</h2>
+      <p>選擇後會立即更新總金額，再開啟 A4 列印畫面。您可在列印視窗選擇「另存為 PDF」。</p>
+      <div class="dialog-actions">
+        <button value="untaxed" class="btn btn-light">未稅</button>
+        <button value="taxed" class="btn btn-primary">已稅</button>
+      </div>
+      <button value="cancel" class="dialog-close" aria-label="關閉">×</button>
+    </form>
+  </dialog>
+
+  <dialog id="commonItemsDialog">
+    <div class="common-dialog-body">
+      <h2>管理常用品項</h2>
+      <p>刪除後不會影響目前估價單的內容。</p>
+      <div id="commonItemsList" class="common-items-list"></div>
+      <button type="button" class="btn btn-primary common-dialog-done">完成</button>
+      <button type="button" class="dialog-close common-dialog-close" aria-label="關閉">×</button>
+    </div>
+  </dialog>
+
+  <datalist id="unitOptions">
+    <option value="坪"></option>
+    <option value="支"></option>
+    <option value="樘"></option>
+    <option value="組"></option>
+    <option value="式"></option>
+    <option value="個"></option>
+  </datalist>
+
+  <template id="itemTemplate">
+    <tr>
+      <td class="item-no"></td>
+      <td data-label="品名／工程項目"><div class="common-picker no-print"><select class="common-item" aria-label="選擇常用品項"><option value="">常用品項快速帶入…</option></select><button type="button" class="manage-common">管理</button></div><textarea class="item-name" rows="1" placeholder="輸入品名或工程內容"></textarea><select class="calc-mode no-print" aria-label="計價方式"><option value="auto">數量 × 單價</option><option value="direct">直接填總價</option></select></td>
+      <td data-label="數量"><input class="item-qty number" type="number" min="0" step="any" placeholder="—"></td>
+      <td data-label="單位"><input class="item-unit" list="unitOptions" placeholder="選擇或輸入"></td>
+      <td data-label="單價"><input class="item-price number" type="number" min="0" step="any" placeholder="—"></td>
+      <td data-label="金額"><input class="item-amount number" type="number" min="0" step="any" placeholder="0"></td>
+      <td class="no-print"><button type="button" class="remove-btn" title="刪除項目">×</button></td>
+    </tr>
+  </template>
+  <script src="app.js"></script>
+</body>
+</html>
